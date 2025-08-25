@@ -43,7 +43,7 @@ public class Game {
                         }
                         break;
                     case 3:
-                        jouer();
+                        jouer(); // Appel de la méthode principale
                         break;
                     case 4:
                         System.out.println("Merci d'avoir joué !");
@@ -62,15 +62,24 @@ public class Game {
         menu.fermerScanner();
     }
 
+    // ✅ Méthode principale de jeu
     private void jouer() {
         System.out.println("Début de la partie !");
-        avancement = 0; // remise à zéro avant partie
+        avancement = 0;
         while (avancement < 64) {
             int de = (int) (Math.random() * 6) + 1;
             avancement += de;
             if (avancement > 64) avancement = 64;
             System.out.println("Le joueur avance de " + de + " cases. Position : " + avancement + "/64");
         }
-        System.out.println("🎉 Le joueur a atteint la fin du plateau !");
+
+        // ✅ Appel d'une méthode avec paramètre et retour
+        System.out.println(genererMessageVictoire(joueur.getName()));
+    }
+
+    // ✅ Méthode définie : type de retour String, paramètre String
+    private String genererMessageVictoire(String nomPersonnage) {
+        return "🎉 Bravo " + nomPersonnage + ", tu as terminé le donjon !";
     }
 }
+1
