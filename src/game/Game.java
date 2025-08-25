@@ -82,4 +82,3 @@ public class Game {
         return "🎉 Bravo " + nomPersonnage + ", tu as terminé le donjon !";
     }
 }
-1
