@@ -1,38 +1,40 @@
 package game;
 
-// ✅ Importation de classes depuis d'autres packages
 import characters.Character;
 import menu.Menu;
 
 public class Game {
 
-    // ✅ Attributs privés : encapsulation respectée
-    private Character joueur;          // Le personnage du joueur
-    private int avancement = 0;        // Position du joueur sur le plateau
+    // Attribut qui représente le joueur actuel
+    private Character joueur;
 
-    // ✅ Méthode principale appelée depuis Main
+    // Position du joueur sur le plateau (0 = départ)
+    private int avancement = 0;
+
+    /**
+     * Méthode principale qui démarre le jeu.
+     * Gère l'affichage du menu, la création/modification du personnage,
+     * et le déroulement de la partie.
+     */
     public void startGame() {
-        // ✅ Instanciation d’un menu
-        Menu menu = new Menu();
+        Menu menu = new Menu();  // Création d'un objet Menu pour interaction
 
-        // ✅ Affichage du menu principal et lecture du choix
+        // Affichage du menu principal et lecture du choix utilisateur
         menu.afficherMenuPrincipal();
         int choix = menu.lireChoixUtilisateur();
 
         if (choix == 1) {
-            // ✅ Création d’un personnage via le menu
+            // Création du personnage via le menu
             joueur = menu.creerPersonnage();
 
             if (joueur == null) {
                 System.out.println("Personnage non créé. Fin du jeu.");
-                menu.fermerScanner(); // ✅ Nettoyage des ressources
+                menu.fermerScanner();
                 return;
             }
-
-            // ✅ Affichage automatique grâce à toString()
             System.out.println("Personnage créé : " + joueur);
 
-            // ✅ Boucle de gestion du menu secondaire
+            // Boucle du menu secondaire tant que le joueur ne quitte pas
             boolean enJeu = true;
             while (enJeu) {
                 menu.afficherSousMenuPersonnage();
@@ -40,12 +42,11 @@ public class Game {
 
                 switch (sousChoix) {
                     case 1:
-                        // ✅ Affichage des infos du personnage
+                        // Afficher les informations du personnage
                         System.out.println(joueur);
                         break;
-
                     case 2:
-                        // ✅ Modification du personnage (remplacement)
+                        // Modifier le personnage (recréation)
                         joueur = menu.creerPersonnage();
                         if (joueur == null) {
                             System.out.println("Personnage non modifié.");
@@ -53,50 +54,59 @@ public class Game {
                             System.out.println("Nouveau personnage : " + joueur);
                         }
                         break;
-
                     case 3:
-                        // ✅ Lancer la partie
+                        // Démarrer la partie
                         jouer();
                         break;
-
                     case 4:
+                        // Quitter le jeu
                         System.out.println("Merci d'avoir joué !");
                         enJeu = false;
                         break;
-
                     default:
                         System.out.println("Choix invalide.");
                 }
             }
-
         } else if (choix == 2) {
+            // Quitter depuis le menu principal
             System.out.println("À bientôt !");
         } else {
             System.out.println("Choix invalide.");
         }
 
-        // ✅ Fermeture du Scanner proprement
+        // Fermeture du scanner pour libérer les ressources
         menu.fermerScanner();
     }
 
-    // ✅ Méthode pour jouer une partie
+    /**
+     * Méthode qui gère le déroulement du jeu.
+     * Le joueur avance sur un plateau de 64 cases en lançant un dé.
+     */
     private void jouer() {
         System.out.println("Début de la partie !");
-        avancement = 0;
+        avancement = 0;  // Réinitialisation de la position avant la partie
 
-        // ✅ Boucle de déplacement sur 64 cases
         while (avancement < 64) {
+            // Simulation d'un lancer de dé (1 à 6)
             int de = (int) (Math.random() * 6) + 1;
             avancement += de;
+
+            // S'assurer que la position ne dépasse pas 64
             if (avancement > 64) avancement = 64;
+
+            // Afficher la progression du joueur
             System.out.println("Le joueur avance de " + de + " cases. Position : " + avancement + "/64");
         }
 
-        // ✅ Message de victoire personnalisé
+        // Message de victoire lorsque le joueur atteint la fin du plateau
         System.out.println(genererMessageVictoire(joueur.getName()));
     }
 
-    // ✅ Méthode avec paramètre et retour
+    /**
+     * Méthode utilitaire qui génère un message de victoire personnalisé.
+     * @param nomPersonnage Le nom du personnage joueur
+     * @return Le message de victoire formaté
+     */
     private String genererMessageVictoire(String nomPersonnage) {
         return "🎉 Bravo " + nomPersonnage + ", tu as terminé le donjon !";
     }
