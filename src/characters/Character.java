@@ -2,6 +2,7 @@ package characters;
 
 import equipment.OfensiveEquipement;
 import equipment.DefensiveEquipement;
+import exceptions.PersonnageHorsPlateauException;
 
 public abstract class Character {
     private String name;
@@ -10,16 +11,35 @@ public abstract class Character {
     private OfensiveEquipement offensiveEquipment;
     private DefensiveEquipement defensiveEquipment;
 
+    private int position;       // Position sur le plateau
+    private int taillePlateau;  // Taille maximale du plateau
+
     public Character(String name, int health, int attack,
                      OfensiveEquipement offensiveEquipment,
-                     DefensiveEquipement defensiveEquipment) {
+                     DefensiveEquipement defensiveEquipment,
+                     int taillePlateau) {
         this.name = name;
         this.health = health;
         this.attack = attack;
         this.offensiveEquipment = offensiveEquipment;
         this.defensiveEquipment = defensiveEquipment;
+        this.position = 0;           // départ à la case 0
+        this.taillePlateau = taillePlateau;
     }
 
+    // Méthode pour déplacer le personnage
+    public void deplacer(int deplacement) throws PersonnageHorsPlateauException {
+        int nouvellePosition = position + deplacement;
+        if (nouvellePosition > taillePlateau) {
+            throw new PersonnageHorsPlateauException(
+                    name + " a dépassé la case finale (" + taillePlateau + ") !"
+            );
+        }
+        position = nouvellePosition;
+        System.out.println(name + " se déplace à la case " + position);
+    }
+
+    public int getPosition() { return position; }
     public String getName() { return name; }
     public int getHealth() { return health; }
     public int getAttack() { return attack; }
@@ -43,6 +63,7 @@ public abstract class Character {
         return "Personnage : " + name +
                 ", Niveau de vie : " + health +
                 ", Force : " + attack +
+                ", Position : " + position +
                 ", Équipement offensif : " + offensiveEquipment +
                 ", Équipement défensif : " + defensiveEquipment;
     }

@@ -1,18 +1,18 @@
 package characters;
 
-import equipment.OfensiveEquipement;
-import equipment.DefensiveEquipement;
 import equipment.Sort;
 import equipment.Philtre;
 
 public class Wizard extends Character {
 
-    public Wizard(String name) {
+    public Wizard(String name, int taillePlateau) {
         super(name,
-                70,  // vie
-                40,  // attaque
+                70,
+                40,
                 new Sort("Boule de feu", 20),
-                new Philtre("Potion de soin", 15));
+                new Philtre("Potion de soin", 15),
+                taillePlateau
+        );
     }
 
     @Override
