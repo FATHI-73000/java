@@ -1,6 +1,6 @@
 package game;
 
-public class EmptyCell extends Cell {
+public class EmptyCell extends Cell implements ICell {
     public EmptyCell(int position) {
         super(position);
     }
