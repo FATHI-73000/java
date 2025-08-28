@@ -1,35 +1,33 @@
 import characters.Warrior;
-import characters.Wizard;
-import exceptions.PersonnageHorsPlateauException;
+import game.Cell;
+import game.Game;
 
 public class Main {
     public static void main(String[] args) {
 
-        // Taille du plateau
-        int taillePlateau = 10;
+        Game game = new Game();  // Création du jeu (initialise le plateau)
 
-        // Création des personnages
-        Warrior thor = new Warrior("Thor", taillePlateau);
-        Wizard merlin = new Wizard("Merlin", taillePlateau);
+        // Création manuelle d’un personnage Warrior (tu peux modifier)
+        Warrior joueur = new Warrior("Thor", 4); // taille du plateau = 4
 
-        // Déplacement de Thor
-        try {
-            thor.deplacer(5);  // Avance à la case 5
-            thor.deplacer(6);  // Dépasse la case finale → exception
-        } catch (PersonnageHorsPlateauException e) {
-            System.out.println("⚠️ Exception : " + e.getMessage());
+        System.out.println("Début du jeu avec le joueur : " + joueur.getName());
+
+        int position = 0;
+
+        // Le joueur avance case par case sur le plateau
+        while (position < 4) {
+            position++;  // avance d’une case
+
+            // Récupère la case courante
+            Cell caseCourante = game.getPlateau().get(position - 1);
+
+            System.out.println("Le joueur avance à la case " + position);
+            System.out.println(caseCourante.toString());
+
+            // Ici tu peux ajouter l’interaction entre joueur et case si besoin
         }
 
-        // Déplacement de Merlin
-        try {
-            merlin.deplacer(3);  // Avance à la case 3
-            merlin.deplacer(8);  // Dépasse la case finale → exception
-        } catch (PersonnageHorsPlateauException e) {
-            System.out.println("⚠️ Exception : " + e.getMessage());
-        }
-
-        // Affichage final des personnages
-        System.out.println(thor);
-        System.out.println(merlin);
+        System.out.println("Le joueur " + joueur.getName() + " a terminé le parcours !");
     }
 }
+
