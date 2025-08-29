@@ -1,3 +1,4 @@
+import characters.Character;
 import characters.Warrior;
 import characters.Wizard;
 import exceptions.PersonnageHorsPlateauException;
@@ -10,8 +11,8 @@ public class Main {
         int taillePlateau = 4; // Plateau fixe dans Game, taille = 4
 
         // --- 1. Présentation des personnages ---
-        Warrior arthur = new Warrior("Arthur", taillePlateau);
-        Wizard merlin = new Wizard("Merlin", taillePlateau);
+        Character arthur = new Warrior("Arthur", taillePlateau);
+        Character merlin = new Wizard("Merlin", taillePlateau);
 
         arthur.presentation();
         merlin.presentation();
@@ -38,29 +39,5 @@ public class Main {
         }
 
         System.out.println("Le joueur " + thor.getName() + " a terminé le parcours !");
-
-        // --- 3. Tests de déplacement avec gestion d'exception ---
-
-        System.out.println("\n--- Tests de déplacement avec exception ---");
-
-        Warrior thor2 = new Warrior("Thor", taillePlateau);
-        Wizard merlin2 = new Wizard("Merlin", taillePlateau);
-
-        try {
-            thor2.deplacer(3);
-            thor2.deplacer(5); // Va au-delà de la limite → exception
-        } catch (PersonnageHorsPlateauException e) {
-            System.out.println("⚠️ Exception (Thor): " + e.getMessage());
-        }
-
-        try {
-            merlin2.deplacer(2);
-            merlin2.deplacer(6); // Va au-delà de la limite → exception
-        } catch (PersonnageHorsPlateauException e) {
-            System.out.println("⚠️ Exception (Merlin): " + e.getMessage());
-        }
-
-        System.out.println(thor2);
-        System.out.println(merlin2);
-    }
+    } // 👈 cette accolade manquait !
 }

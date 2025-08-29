@@ -2,6 +2,7 @@ package game;
 
 import characters.Character;
 import menu.Menu;
+import exceptions.PersonnageHorsPlateauException;
 
 import java.util.ArrayList;
 
@@ -10,6 +11,11 @@ public class Game {
     private Character joueur;
     private int avancement = 0;
     private ArrayList<Cell> plateau;
+
+    // Ajout de ces champs pour déplacer directement ici
+    private int position = 0;
+    private int taillePlateau = 4; // taille selon le nombre de cases du plateau
+    private String name = "";
 
     public Game() {
         initialiserPlateau();
@@ -48,6 +54,8 @@ public class Game {
                 menu.fermerScanner();
                 return;
             }
+
+            name = joueur.getName(); // On copie le nom du personnage pour le test
             System.out.println("Personnage créé : " + joueur);
 
             boolean enJeu = true;
@@ -64,6 +72,7 @@ public class Game {
                         if (joueur == null) {
                             System.out.println("Personnage non modifié.");
                         } else {
+                            name = joueur.getName(); // met à jour le nom
                             System.out.println("Nouveau personnage : " + joueur);
                         }
                         break;
@@ -90,23 +99,40 @@ public class Game {
     private void jouer() {
         System.out.println("Début de la partie !");
         avancement = 0;
+        position = 0;
 
-        while (avancement < plateau.size()) {
+        while (position < taillePlateau) {
             int de = lancerDe();
-            avancement += de;
 
-            if (avancement > plateau.size()) avancement = plateau.size();
+            try {
+                deplacer(de);
+            } catch (PersonnageHorsPlateauException e) {
+                System.out.println("Erreur : " + e.getMessage());
+                return; // Fin du jeu si exception
+            }
 
-            Cell caseActuelle = plateau.get(avancement - 1);
+            Cell caseActuelle = plateau.get(position);
 
             System.out.println("Vous avancez de " + de + " case(s).");
             System.out.println(caseActuelle); // Affiche la description de la case
         }
 
-        System.out.println(genererMessageVictoire(joueur.getName()));
+        System.out.println(genererMessageVictoire(name));
+    }
+
+    //  Intégration directe de la méthode de déplacement ici
+    public void deplacer(int deplacement) throws PersonnageHorsPlateauException {
+        int nouvellePosition = position + deplacement;
+        if (nouvellePosition >= taillePlateau) {
+            throw new PersonnageHorsPlateauException(
+                    name + " a dépassé la case finale (" + taillePlateau + ") !"
+            );
+        }
+        position = nouvellePosition;
+        System.out.println(name + " se déplace à la case " + (position + 1));
     }
 
     private String genererMessageVictoire(String nomPersonnage) {
-        return "🎉 Bravo " + nomPersonnage + ", tu as terminé le donjon !";
+        return "Bravo " + nomPersonnage + ", tu as terminé le donjon !";
     }
 }

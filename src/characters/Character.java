@@ -27,17 +27,6 @@ public abstract class Character {
         this.taillePlateau = taillePlateau;
     }
 
-    // Méthode pour déplacer le personnage
-    public void deplacer(int deplacement) throws PersonnageHorsPlateauException {
-        int nouvellePosition = position + deplacement;
-        if (nouvellePosition > taillePlateau) {
-            throw new PersonnageHorsPlateauException(
-                    name + " a dépassé la case finale (" + taillePlateau + ") !"
-            );
-        }
-        position = nouvellePosition;
-        System.out.println(name + " se déplace à la case " + position);
-    }
 
     public int getPosition() { return position; }
     public String getName() { return name; }

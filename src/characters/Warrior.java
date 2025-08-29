@@ -17,7 +17,7 @@ public class Warrior extends Character {
 
     @Override
     public void presentation() {
-        System.out.println("⚔️ Je suis le warrior " + getName() +
+        System.out.println(" Je suis le warrior " + getName() +
                 " ! J'ai " + getHealth() + " PV et " + getAttack() + " ATQ.");
     }
 }

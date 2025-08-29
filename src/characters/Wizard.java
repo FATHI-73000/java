@@ -17,7 +17,7 @@ public class Wizard extends Character {
 
     @Override
     public void presentation() {
-        System.out.println("✨ Je suis le wizard " + getName() +
+        System.out.println(" Je suis le wizard " + getName() +
                 " ! J'ai " + getHealth() + " PV et " + getAttack() + " ATQ.");
     }
 }
