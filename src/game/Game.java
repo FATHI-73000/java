@@ -6,22 +6,30 @@ import exceptions.PersonnageHorsPlateauException;
 
 import java.util.ArrayList;
 
+/**
+ * Classe représentant le jeu principal.
+ * Gère le plateau, le joueur et la logique de déplacement.
+ */
 public class Game {
 
     private Character joueur;
     private int avancement = 0;
     private ArrayList<Cell> plateau;
 
-    // Ajout de ces champs pour déplacer directement ici
     private int position = 0;
-    private int taillePlateau = 4; // taille selon le nombre de cases du plateau
+    private int taillePlateau = 4; // nombre de cases du plateau
     private String name = "";
 
+    /**
+     * Constructeur. Initialise le plateau de jeu.
+     */
     public Game() {
         initialiserPlateau();
     }
 
-    // Initialise le plateau avec les 4 cases
+    /**
+     * Initialise le plateau avec 4 cases (vide, ennemi, arme, potion).
+     */
     private void initialiserPlateau() {
         plateau = new ArrayList<>();
         plateau.add(new EmptyCell(1));
@@ -30,16 +38,27 @@ public class Game {
         plateau.add(new PotionCell(4));
     }
 
-    // Getter pour le plateau
+    /**
+     * Retourne le plateau du jeu.
+     *
+     * @return La liste des cases du plateau
+     */
     public ArrayList<Cell> getPlateau() {
         return plateau;
     }
 
-    // Dé de 1 case (dé pipé)
+    /**
+     * Lance un dé pipé pour avancer de 1 case.
+     *
+     * @return la valeur du dé (toujours 1)
+     */
     private int lancerDe() {
         return 1;
     }
 
+    /**
+     * Démarre le jeu et gère le menu principal.
+     */
     public void startGame() {
         Menu menu = new Menu();
 
@@ -55,7 +74,7 @@ public class Game {
                 return;
             }
 
-            name = joueur.getName(); // On copie le nom du personnage pour le test
+            name = joueur.getName();
             System.out.println("Personnage créé : " + joueur);
 
             boolean enJeu = true;
@@ -72,7 +91,7 @@ public class Game {
                         if (joueur == null) {
                             System.out.println("Personnage non modifié.");
                         } else {
-                            name = joueur.getName(); // met à jour le nom
+                            name = joueur.getName();
                             System.out.println("Nouveau personnage : " + joueur);
                         }
                         break;
@@ -96,6 +115,9 @@ public class Game {
         menu.fermerScanner();
     }
 
+    /**
+     * Boucle principale du jeu pour faire avancer le joueur sur le plateau.
+     */
     private void jouer() {
         System.out.println("Début de la partie !");
         avancement = 0;
@@ -108,19 +130,23 @@ public class Game {
                 deplacer(de);
             } catch (PersonnageHorsPlateauException e) {
                 System.out.println("Erreur : " + e.getMessage());
-                return; // Fin du jeu si exception
+                return;
             }
 
             Cell caseActuelle = plateau.get(position);
-
             System.out.println("Vous avancez de " + de + " case(s).");
-            System.out.println(caseActuelle); // Affiche la description de la case
+            System.out.println(caseActuelle);
         }
 
         System.out.println(genererMessageVictoire(name));
     }
 
-    //  Intégration directe de la méthode de déplacement ici
+    /**
+     * Déplace le joueur sur le plateau.
+     *
+     * @param deplacement le nombre de cases à avancer
+     * @throws PersonnageHorsPlateauException si le joueur dépasse la dernière case
+     */
     public void deplacer(int deplacement) throws PersonnageHorsPlateauException {
         int nouvellePosition = position + deplacement;
         if (nouvellePosition >= taillePlateau) {
@@ -132,6 +158,12 @@ public class Game {
         System.out.println(name + " se déplace à la case " + (position + 1));
     }
 
+    /**
+     * Génère un message de victoire pour le joueur.
+     *
+     * @param nomPersonnage le nom du joueur
+     * @return le message de victoire
+     */
     private String genererMessageVictoire(String nomPersonnage) {
         return "Bravo " + nomPersonnage + ", tu as terminé le donjon !";
     }
