@@ -13,12 +13,9 @@ import java.util.ArrayList;
 public class Game {
 
     private Character joueur;
-    private int avancement = 0;
-    private ArrayList<Cell> plateau;
-
-    private int position = 0;
-    private int taillePlateau = 4; // nombre de cases du plateau
-    private String name = "";
+    private ArrayList<Cell> board;        // plateau de jeu
+    private int playerPosition = 0;       // position du joueur sur le plateau
+    private int taillePlateau = 4;        // nombre de cases du plateau
 
     /**
      * Constructeur. Initialise le plateau de jeu.
@@ -28,38 +25,34 @@ public class Game {
     }
 
     /**
-     * Initialise le plateau avec 4 cases (vide, ennemi, arme, potion).
+     * Initialise le plateau avec 4 cases : vide, ennemi, arme, potion.
      */
     private void initialiserPlateau() {
-        plateau = new ArrayList<>();
-        plateau.add(new EmptyCell(1));
-        plateau.add(new EnemyCell(2));
-        plateau.add(new WeaponCell(3));
-        plateau.add(new PotionCell(4));
+        board = new ArrayList<>();
+        board.add(new EmptyCell(1));
+        board.add(new EnemyCell(2));
+        board.add(new WeaponCell(3));
+        board.add(new PotionCell(4));
     }
 
     /**
      * Retourne le plateau du jeu.
-     *
-     * @return La liste des cases du plateau
      */
-    public ArrayList<Cell> getPlateau() {
-        return plateau;
+    public ArrayList<Cell> getBoard() {
+        return board;
     }
 
     /**
      * Lance un dé pipé pour avancer de 1 case.
-     *
-     * @return la valeur du dé (toujours 1)
      */
-    private int lancerDe() {
+    private int lanceDe() {
         return 1;
     }
 
     /**
      * Démarre le jeu et gère le menu principal.
      */
-    public void startGame() {
+    public void start() {
         Menu menu = new Menu();
 
         menu.afficherMenuPrincipal();
@@ -74,7 +67,6 @@ public class Game {
                 return;
             }
 
-            name = joueur.getName();
             System.out.println("Personnage créé : " + joueur);
 
             boolean enJeu = true;
@@ -83,27 +75,22 @@ public class Game {
                 int sousChoix = menu.lireChoixUtilisateur();
 
                 switch (sousChoix) {
-                    case 1:
-                        System.out.println(joueur);
-                        break;
-                    case 2:
-                        joueur = menu.creerPersonnage();
-                        if (joueur == null) {
-                            System.out.println("Personnage non modifié.");
-                        } else {
-                            name = joueur.getName();
+                    case 1 -> System.out.println(joueur);
+                    case 2 -> {
+                        Character nouveau = menu.creerPersonnage();
+                        if (nouveau != null) {
+                            joueur = nouveau;
                             System.out.println("Nouveau personnage : " + joueur);
+                        } else {
+                            System.out.println("Personnage non modifié.");
                         }
-                        break;
-                    case 3:
-                        jouer();
-                        break;
-                    case 4:
+                    }
+                    case 3 -> jouer();  // lance la boucle principale
+                    case 4 -> {
                         System.out.println("Merci d'avoir joué !");
                         enJeu = false;
-                        break;
-                    default:
-                        System.out.println("Choix invalide.");
+                    }
+                    default -> System.out.println("Choix invalide.");
                 }
             }
         } else if (choix == 2) {
@@ -116,55 +103,50 @@ public class Game {
     }
 
     /**
-     * Boucle principale du jeu pour faire avancer le joueur sur le plateau.
+     * Méthode principale pour jouer tout le plateau.
      */
     private void jouer() {
         System.out.println("Début de la partie !");
-        avancement = 0;
-        position = 0;
+        playerPosition = 0;
 
-        while (position < taillePlateau) {
-            int de = lancerDe();
-
-            try {
-                deplacer(de);
-            } catch (PersonnageHorsPlateauException e) {
-                System.out.println("Erreur : " + e.getMessage());
-                return;
-            }
-
-            Cell caseActuelle = plateau.get(position);
-            System.out.println("Vous avancez de " + de + " case(s).");
-            System.out.println(caseActuelle);
+        while (playerPosition < taillePlateau) {
+            playTurn();
         }
 
-        System.out.println(genererMessageVictoire(name));
+        System.out.println("Bravo " + joueur.getName() + ", tu as terminé le donjon !");
+    }
+
+    /**
+     * Gère un tour complet : lancer le dé, avancer, interaction avec la case.
+     */
+    private void playTurn() {
+        int de = lanceDe();
+        try {
+            deplacer(de);
+        } catch (PersonnageHorsPlateauException e) {
+            System.out.println("Erreur : " + e.getMessage());
+            playerPosition = taillePlateau; // fin du jeu
+            return;
+        }
+
+        Cell caseActuelle = board.get(playerPosition);
+        System.out.println(joueur.getName() + " avance de " + de + " case(s) et arrive à la case " + (playerPosition + 1));
+        System.out.println(caseActuelle);
+
+        // Ici, tu peux ajouter des interactions selon le type de case
+        // ex : caseActuelle.interagir(joueur);
     }
 
     /**
      * Déplace le joueur sur le plateau.
-     *
-     * @param deplacement le nombre de cases à avancer
-     * @throws PersonnageHorsPlateauException si le joueur dépasse la dernière case
      */
-    public void deplacer(int deplacement) throws PersonnageHorsPlateauException {
-        int nouvellePosition = position + deplacement;
+    private void deplacer(int deplacement) throws PersonnageHorsPlateauException {
+        int nouvellePosition = playerPosition + deplacement;
         if (nouvellePosition >= taillePlateau) {
             throw new PersonnageHorsPlateauException(
-                    name + " a dépassé la case finale (" + taillePlateau + ") !"
+                    joueur.getName() + " a dépassé la case finale (" + taillePlateau + ") !"
             );
         }
-        position = nouvellePosition;
-        System.out.println(name + " se déplace à la case " + (position + 1));
-    }
-
-    /**
-     * Génère un message de victoire pour le joueur.
-     *
-     * @param nomPersonnage le nom du joueur
-     * @return le message de victoire
-     */
-    private String genererMessageVictoire(String nomPersonnage) {
-        return "Bravo " + nomPersonnage + ", tu as terminé le donjon !";
+        playerPosition = nouvellePosition;
     }
 }
