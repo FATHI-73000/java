@@ -2,6 +2,7 @@ package characters;
 
 import equipment.Arme;
 import equipment.Bouclier;
+import com.google.gson.Gson;
 
 /**
  * Classe représentant un personnage de type Warrior.
@@ -34,5 +35,16 @@ public class Warrior extends Character {
     public void presentation() {
         System.out.println("Je suis le warrior " + getName() +
                 " ! J'ai " + getHealth() + " PV et " + getAttack() + " ATQ.");
+    }
+
+    /**
+     * Retourne une représentation JSON du Warrior.
+     *
+     * @return String JSON
+     */
+    @Override
+    public String toJson() {
+        Gson gson = new Gson();
+        return gson.toJson(this);
     }
 }

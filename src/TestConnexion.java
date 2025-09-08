@@ -4,7 +4,7 @@ import java.sql.SQLException;
 
 public class TestConnexion {
     public static void main(String[] args) {
-        String url = "jdbc:mysql://localhost:3306/game"; // game = nom de ta BDD
+        String url = "jdbc:mysql://localhost:3306/my_app?serverTimezone=UTC"; // game = nom de ta BDD
         String user = "root"; // ou ton propre utilisateur
         String password = "25095609mfs!"; // remplace par ton mot de passe
 

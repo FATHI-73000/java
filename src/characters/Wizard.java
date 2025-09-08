@@ -2,6 +2,7 @@ package characters;
 
 import equipment.Sort;
 import equipment.Philtre;
+import com.google.gson.Gson;
 
 /**
  * Classe représentant un personnage de type Wizard.
@@ -34,5 +35,16 @@ public class Wizard extends Character {
     public void presentation() {
         System.out.println("Je suis le wizard " + getName() +
                 " ! J'ai " + getHealth() + " PV et " + getAttack() + " ATQ.");
+    }
+
+    /**
+     * Retourne une représentation JSON du Wizard.
+     *
+     * @return String JSON
+     */
+    @Override
+    public String toJson() {
+        Gson gson = new Gson();
+        return gson.toJson(this);
     }
 }

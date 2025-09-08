@@ -106,4 +106,6 @@ public abstract class Character {
                 ", Équipement offensif : " + offensiveEquipment +
                 ", Équipement défensif : " + defensiveEquipment;
     }
+
+    public abstract String toJson();
 }

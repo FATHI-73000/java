@@ -3,7 +3,6 @@ package game;
 import characters.Character;
 import menu.Menu;
 import exceptions.PersonnageHorsPlateauException;
-
 import java.util.ArrayList;
 
 /**
@@ -13,15 +12,17 @@ import java.util.ArrayList;
 public class Game {
 
     private Character joueur;
-    private ArrayList<Cell> board;        // plateau de jeu
-    private int playerPosition = 0;       // position du joueur sur le plateau
-    private int taillePlateau = 4;        // nombre de cases du plateau
+    private ArrayList<Cell> board;   // plateau de jeu
+    private int playerPosition = 0;  // position du joueur sur le plateau
+    private int taillePlateau = 4;   // nombre de cases du plateau
+    private De de;                   // interface De
 
     /**
-     * Constructeur. Initialise le plateau de jeu.
+     * Constructeur. Initialise le plateau de jeu et le dé.
      */
     public Game() {
         initialiserPlateau();
+        this.de = new DeNormal(); // ou new DePipe()
     }
 
     /**
@@ -35,23 +36,61 @@ public class Game {
         board.add(new PotionCell(4));
     }
 
-    /**
-     * Retourne le plateau du jeu.
-     */
+    // ---------------------
+    // GESTION DU PLATEAU (collection d'objets)
+    // ---------------------
+
+    /** Affiche le contenu du plateau */
+    public void listerPlateau() {
+        System.out.println("Contenu du plateau :");
+        for (Cell cell : board) {
+            System.out.println(cell);
+        }
+    }
+
+    /** Ajoute une nouvelle case au plateau */
+    public void ajouterCase(Cell cell) {
+        board.add(cell);
+        System.out.println("Case ajoutée : " + cell);
+    }
+
+    /** Supprime une case selon sa position */
+    public void supprimerCase(int position) {
+        Cell trouve = null;
+        for (Cell cell : board) {
+            if (cell.getPosition() == position) {
+                trouve = cell;
+                break;
+            }
+        }
+        if (trouve != null) {
+            board.remove(trouve);
+            System.out.println("Case supprimée : " + trouve);
+        } else {
+            System.out.println("Case position " + position + " introuvable !");
+        }
+    }
+
+    /** Recherche une case selon sa position */
+    public Cell rechercherCase(int position) {
+        for (Cell cell : board) {
+            if (cell.getPosition() == position) {
+                System.out.println("Case trouvée : " + cell);
+                return cell;
+            }
+        }
+        System.out.println("Case position " + position + " introuvable !");
+        return null;
+    }
+
+    // ---------------------
+    // LOGIQUE DE JEU
+    // ---------------------
+
     public ArrayList<Cell> getBoard() {
         return board;
     }
 
-    /**
-     * Lance un dé pipé pour avancer de 1 case.
-     */
-    private int lanceDe() {
-        return 1;
-    }
-
-    /**
-     * Démarre le jeu et gère le menu principal.
-     */
     public void start() {
         Menu menu = new Menu();
 
@@ -102,9 +141,7 @@ public class Game {
         menu.fermerScanner();
     }
 
-    /**
-     * Méthode principale pour jouer tout le plateau.
-     */
+    /** Méthode principale pour jouer tout le plateau */
     private void jouer() {
         System.out.println("Début de la partie !");
         playerPosition = 0;
@@ -116,13 +153,11 @@ public class Game {
         System.out.println("Bravo " + joueur.getName() + ", tu as terminé le donjon !");
     }
 
-    /**
-     * Gère un tour complet : lancer le dé, avancer, interaction avec la case.
-     */
+    /** Gère un tour complet : lancer le dé, avancer, interaction avec la case */
     private void playTurn() {
-        int de = lanceDe();
+        int resultatDe = de.lancer(); // ⚡ appel via l'interface De
         try {
-            deplacer(de);
+            deplacer(resultatDe);
         } catch (PersonnageHorsPlateauException e) {
             System.out.println("Erreur : " + e.getMessage());
             playerPosition = taillePlateau; // fin du jeu
@@ -130,16 +165,11 @@ public class Game {
         }
 
         Cell caseActuelle = board.get(playerPosition);
-        System.out.println(joueur.getName() + " avance de " + de + " case(s) et arrive à la case " + (playerPosition + 1));
+        System.out.println(joueur.getName() + " avance de " + resultatDe +
+                " case(s) et arrive à la case " + (playerPosition + 1));
         System.out.println(caseActuelle);
-
-        // Ici, tu peux ajouter des interactions selon le type de case
-        // ex : caseActuelle.interagir(joueur);
     }
 
-    /**
-     * Déplace le joueur sur le plateau.
-     */
     private void deplacer(int deplacement) throws PersonnageHorsPlateauException {
         int nouvellePosition = playerPosition + deplacement;
         if (nouvellePosition >= taillePlateau) {
@@ -148,5 +178,16 @@ public class Game {
             );
         }
         playerPosition = nouvellePosition;
+    }
+
+    /** Méthode de démo pour tester les manipulations de plateau */
+    public void demoPlateau() {
+        System.out.println("===== DEMO PLATEAU =====");
+        listerPlateau();                      // liste initiale
+        ajouterCase(new EnemyCell(5));        // ajout
+        rechercherCase(3);                     // recherche
+        supprimerCase(2);                     // suppression
+        listerPlateau();                      // liste finale
+        System.out.println("========================");
     }
 }
